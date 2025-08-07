@@ -1,0 +1,82 @@
+{
+  "name": "@neatcode/db",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "nx": {
+    "projectType": "library",
+    "targets": {
+      "build": {
+        "executor": "@nx/js:tsc",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "options": {
+          "outputPath": "dist/tools/db",
+          "tsConfig": "tools/db/tsconfig.lib.json",
+          "packageJson": "tools/db/package.json",
+          "main": "tools/db/src/index.ts",
+          "assets": [
+            "tools/db/*.md"
+          ]
+        },
+        "configurations": {
+          "development": {},
+          "production": {}
+        }
+      },
+      "codegen": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "pnpm kysely-codegen"
+        }
+      },
+      "migrate-make": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "tools/db",
+          "command": "pnpm kysely migrate:make"
+        }
+      },
+      "migrate": {
+        "executor": "nx:run-commands",
+        "options": {
+          "commands": [
+            "node dist/tools/db/src/run.js"
+          ],
+          "parallel": false
+        },
+        "dependsOn": [
+          "build"
+        ]
+      },
+      "start-docker": {
+        "executor": "nx:run-commands",
+        "options": {
+          "commands": [
+            "docker compose -f compose.dev.yml up -d --build",
+            "while ! nc -q0 -z localhost 5432; do sleep 5; done"
+          ]
+        },
+        "configurations": {
+          "development": {}
+        }
+      }
+    }
+  }
+}
