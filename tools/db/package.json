@@ -52,10 +52,7 @@
       "migrate": {
         "executor": "nx:run-commands",
         "options": {
-          "commands": [
-            "node dist/tools/db/src/run.js"
-          ],
-          "parallel": false
+          "command": "node dist/tools/db/src/migrate.js"
         },
         "dependsOn": [
           "build"
