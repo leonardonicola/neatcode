@@ -1,6 +1,7 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
+  "globalEnv": ["PORT"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -9,6 +10,12 @@
     },
     "lint": {
       "dependsOn": ["^lint"]
+    },
+    "test": {
+      "dependsOn": ["^transit"]
+    },
+    "transit": {
+      "dependsOn": ["^transit"]
     },
     "check-types": {
       "dependsOn": ["^check-types"]
