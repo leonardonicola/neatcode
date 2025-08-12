@@ -1,6 +1,14 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
+  "globalEnv": [
+    "PORT",
+    "DB_HOST",
+    "DB_USER",
+    "DB_NAME",
+    "DB_PORT",
+    "DB_PASSWORD"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

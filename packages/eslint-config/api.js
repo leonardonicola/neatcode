@@ -27,4 +27,7 @@ export const apiJsConfig = [
       },
     },
   },
+  {
+    ignores: ["migrations/**"],
+  },
 ];
