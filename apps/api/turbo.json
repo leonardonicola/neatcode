@@ -21,8 +21,15 @@
     "dev": {
       "cache": false,
       "persistent": true,
-      "dependsOn": ["migrate:up"],
+      "dependsOn": ["generate:db"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"]
+    },
+    "generate:db": {
+      "dependsOn": ["migrate:up"],
+      "cache": false
+    },
+    "shut:db": {
+      "cache": false
     }
   }
 }

@@ -4,12 +4,15 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "api:dev": "turbo run api#dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
     "test": "turbo run test",
     "start:db": "turbo run start:db",
-    "migrate:up": "turbo run migrate:up"
+    "shut:db": "turbo run shut:db",
+    "migrate:up": "turbo run migrate:up",
+    "migrate:down": "turbo run migrate:down"
   },
   "devDependencies": {
     "prettier": "^3.6.2",

@@ -2,14 +2,18 @@ import { Logger, Module } from "@nestjs/common";
 import { LoggerModule } from "nestjs-pino";
 import { DatabaseModule } from "./database/database.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import configuration, { type AppConfig, type LoggerConfig } from "./config";
 import { GracefulShutdownModule } from "nestjs-graceful-shutdown";
 import { HealthModule } from "./modules/health/health.module";
+import { rootConfig, type AppConfig, type LoggerConfig } from "./config";
+import { dbConfig } from "./database/database.config";
+import { APP_GUARD } from "@nestjs/core";
+import { GlobalAuthGuard } from "./modules/auth/guards/global.guard";
+import { AuthModule } from "./modules/auth/auth.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [configuration],
+      load: [rootConfig, dbConfig],
       isGlobal: true,
     }),
     GracefulShutdownModule.forRoot(),
@@ -31,9 +35,16 @@ import { HealthModule } from "./modules/health/health.module";
     }),
     DatabaseModule,
 
+    AuthModule,
     HealthModule,
   ],
 
-  providers: [Logger],
+  providers: [
+    Logger,
+    {
+      provide: APP_GUARD,
+      useClass: GlobalAuthGuard,
+    },
+  ],
 })
 export class AppModule {}

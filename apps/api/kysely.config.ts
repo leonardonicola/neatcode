@@ -10,6 +10,5 @@ export default defineConfig({
   },
   migrations: {
     migrationFolder: "src/database/migrations",
-    allowJS: true,
   },
 });

@@ -10,7 +10,7 @@ export class DatabaseHealthIndicator {
   private readonly logger = new Logger(DatabaseHealthIndicator.name);
 
   constructor(
-    @Inject("KYSELY_CONNECTION") private db: Kysely<DB>,
+    @Inject("KYSELY_CONNECTION") private readonly db: Kysely<DB>,
     private readonly healthIndicatorService: HealthIndicatorService,
   ) {}
 

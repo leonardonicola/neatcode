@@ -1,6 +1,7 @@
 import { Controller, Get } from "@nestjs/common";
 import { HealthCheck, HealthCheckService } from "@nestjs/terminus";
 import { DatabaseHealthIndicator } from "../../database/database.health";
+import { Public } from "../auth/decorator";
 
 @Controller("health")
 export class HealthController {
@@ -9,6 +10,7 @@ export class HealthController {
     private readonly db: DatabaseHealthIndicator,
   ) {}
 
+  @Public()
   @Get()
   @HealthCheck()
   healthCheck() {
