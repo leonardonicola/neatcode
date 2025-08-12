@@ -29,7 +29,7 @@ export default async (): Promise<AppConfig> => {
     process.env,
   );
 
-  if (!!error) {
+  if (error) {
     throw new Error(error.message);
   }
 
