@@ -1,4 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "extends": "@repo/typescript-config/api.json"
+  "extends": "@repo/typescript-config/api.json",
+  "exclude": ["node_modules", "test", "dist", "**/*spec.ts"],
+  "compilerOptions": {
+    "outDir": "dist"
+  },
+  "include": ["src"]
 }

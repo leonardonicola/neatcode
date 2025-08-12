@@ -1,0 +1,19 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "extends": ["//"],
+  "ui": "tui",
+  "globalEnv": [
+    "PORT",
+    "DB_HOST",
+    "DB_USER",
+    "DB_NAME",
+    "DB_PORT",
+    "DB_PASSWORD"
+  ],
+  "tasks": {
+    "migrate:up": {
+      "dependsOn": ["api#build"]
+    },
+    "start:db": {}
+  }
+}
