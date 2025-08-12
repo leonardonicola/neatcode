@@ -31,6 +31,6 @@ jobs:
           node-version: 22
           cache: 'pnpm'
 
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm install
 
-      - run: pnpm exec turbo lint
+      - run: pnpm turbo lint
