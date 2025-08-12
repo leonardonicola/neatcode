@@ -3,9 +3,26 @@
   "extends": ["//"],
   "ui": "tui",
   "tasks": {
-    "migrate:up": {
-      "dependsOn": ["api#build"]
+    "migrate:prod:up": {
+      "dependsOn": ["api#build"],
+      "cache": false
     },
-    "start:db": {}
+    "migrate:up": {
+      "dependsOn": ["start:db"],
+      "cache": false
+    },
+    "migrate:down": {
+      "dependsOn": ["start:db"],
+      "cache": false
+    },
+    "start:db": {
+      "cache": false
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["migrate:up"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"]
+    }
   }
 }

@@ -1,14 +1,8 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
-  "globalEnv": [
-    "PORT",
-    "DB_HOST",
-    "DB_USER",
-    "DB_NAME",
-    "DB_PORT",
-    "DB_PASSWORD"
-  ],
+  "globalEnv": ["PORT", "SECRET", "DATABASE_URL", "NODE_ENV"],
+  "globalDependencies": [".env"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -23,7 +17,8 @@
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "inputs": ["$TURBO_DEFAULT$", ".env*"]
     },
     "test:e2e": {},
     "test:cov": {},
