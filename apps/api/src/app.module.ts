@@ -29,6 +29,12 @@ import { dbConfig } from "./config/database";
             level: loggerConfig?.level,
             transport: isDev ? { target: "pino-pretty" } : undefined,
             autoLogging: false,
+            formatters: {
+              level: (label: string) => {
+                return { level: label };
+              },
+            },
+            quietReqLogger: true,
           },
         };
       },

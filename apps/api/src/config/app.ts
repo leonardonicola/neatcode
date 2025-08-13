@@ -25,7 +25,7 @@ export const rootConfig = async (): Promise<AppConfig> => {
     z.object({
       SECRET: z.string(),
       PORT: z.coerce.number().min(1024).max(65535).default(3000),
-      LOGGER_LEVEL: z.enum(["info", "debug", "error", "warn"]).default("info"),
+      LOGGER_LEVEL: z.enum(["info", "debug", "error", "warn"]).default("debug"),
       OAUTH2_AUTH_URL: z.url(),
       OAUTH2_TOKEN_URL: z.url(),
       OAUTH2_CLIENT_ID: z.string(),
