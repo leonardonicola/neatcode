@@ -10,13 +10,13 @@ import { DB } from "kysely-codegen";
 import { NewUser, SafeUser, User } from "../../@types/user";
 import { v4 } from "uuid";
 import { SessionUser } from "../../@types/session";
-import { LoginDto, RegisterDto } from "./dtos";
+import { LoginDto, RegisterDto, RegisterOAuthDto } from "./dtos";
 
 @Injectable()
 export class AuthService {
   constructor(@Inject("KYSELY_CONNECTION") private readonly db: Kysely<DB>) {}
 
-  async register(registerDto: RegisterDto): Promise<SafeUser> {
+  async registerLocal(registerDto: RegisterDto): Promise<SafeUser> {
     const { email, password, firstName, lastName } = registerDto;
 
     // Check if user already exists
@@ -27,7 +27,7 @@ export class AuthService {
       .executeTakeFirst();
 
     if (existingUser) {
-      throw new ConflictException("User with this email already exists");
+      throw new ConflictException("User already exists");
     }
 
     // Hash password
@@ -51,6 +51,64 @@ export class AuthService {
 
     return this.toSafeUser(user);
   }
+  async registerOAuthUser(dto: RegisterOAuthDto) {
+    const { email, firstName, lastName, providerId } = dto;
+
+    // Check if user already exists
+    const existingUser = await this.db
+      .selectFrom("users")
+      .select("id")
+      .where((eb) =>
+        eb.or([eb("email", "=", email), eb("provider_id", "=", providerId)]),
+      )
+      .executeTakeFirst();
+
+    if (existingUser) {
+      throw new ConflictException("User already exists");
+    }
+
+    // Create user
+    const newUser: NewUser = {
+      id: v4(),
+      email,
+      first_name: firstName,
+      last_name: lastName || null,
+      provider_id: providerId,
+    };
+
+    const user = await this.db
+      .insertInto("users")
+      .values(newUser)
+      .returningAll()
+      .executeTakeFirstOrThrow();
+
+    return this.toSafeUser(user);
+  }
+
+  async validateOAuthLogin(profile: SessionUser): Promise<SafeUser> {
+    let user = await this.db
+      .selectFrom("users")
+      .select([
+        "id",
+        "first_name",
+        "email",
+        "provider_id",
+        "created_at",
+        "updated_at",
+        "last_name",
+      ])
+      .where("provider_id", "=", profile.id)
+      .executeTakeFirst();
+
+    if (!user) {
+      user = await this.registerOAuthUser({
+        email: profile.email,
+        providerId: profile.id,
+        firstName: profile.first_name || profile.email,
+      });
+    }
+    return user;
+  }
 
   async validateUser(
     email: string,
@@ -66,7 +124,10 @@ export class AuthService {
       return null;
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      user.password_hash ?? "",
+    );
 
     if (!isPasswordValid) {
       return null;

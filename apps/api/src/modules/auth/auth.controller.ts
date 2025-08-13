@@ -8,7 +8,6 @@ import {
   Response,
   HttpCode,
   HttpStatus,
-  Logger,
 } from "@nestjs/common";
 import type {
   Request as ExpressRequest,
@@ -19,16 +18,16 @@ import { LocalAuthGuard } from "./guards/local.guard";
 import { Public } from "./decorator";
 import { SessionUser } from "../../@types/session";
 import type { LoginDto, RegisterDto } from "./dtos/";
+import { OAuth2Guard } from "./guards/oauth.guard";
 
 @Controller("auth")
 export class AuthController {
-  private readonly logger = new Logger(AuthController.name);
   constructor(private readonly authService: AuthService) {}
 
-  @Public() // Mark as public route
+  @Public()
   @Post("register")
   async register(@Body() registerDto: RegisterDto) {
-    const user = await this.authService.register(registerDto);
+    const user = await this.authService.registerLocal(registerDto);
     return {
       message: "User registered successfully",
       user,
@@ -51,6 +50,26 @@ export class AuthController {
         user: req.user,
         sessionId: req.sessionID,
       });
+    });
+  }
+
+  @Public()
+  @Get("oauth2")
+  @UseGuards(OAuth2Guard)
+  async oauthLogin() {}
+
+  @Public()
+  @Get("oauth2/callback")
+  @UseGuards(OAuth2Guard)
+  oauthCallback(
+    @Request() req: ExpressRequest & { user: SessionUser },
+    @Response() res: ExpressResponse,
+  ) {
+    req.login(req.user, (err) => {
+      if (err) {
+        return res.status(500).send("Login failed");
+      }
+      return res.redirect("/");
     });
   }
 

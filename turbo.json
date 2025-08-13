@@ -1,7 +1,17 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
-  "globalEnv": ["PORT", "SECRET", "DATABASE_URL", "NODE_ENV"],
+  "globalEnv": [
+    "PORT",
+    "SECRET",
+    "DATABASE_URL",
+    "NODE_ENV",
+    "OAUTH2_CLIENT_ID",
+    "OAUTH2_CLIENT_SECRET",
+    "OAUTH2_CALLBACK_URL",
+    "OAUTH2_AUTH_URL",
+    "OAUTH2_TOKEN_URL"
+  ],
   "globalDependencies": [".env"],
   "tasks": {
     "build": {

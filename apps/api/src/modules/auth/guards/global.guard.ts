@@ -1,4 +1,3 @@
-// auth/guards/global-auth.guard.ts
 import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Request } from "express";
@@ -14,12 +13,10 @@ export class GlobalAuthGuard implements CanActivate {
       context.getClass(),
     ]);
 
-    // If route is marked as public, allow access
     if (isPublic) {
       return true;
     }
 
-    // For protected routes, check authentication
     const request = context.switchToHttp().getRequest<Request>();
     return request.isAuthenticated();
   }

@@ -5,16 +5,23 @@ export async function up(db: Kysely<unknown>): Promise<void> {
     .createTable("users")
     .ifNotExists()
     .addColumn("id", "uuid", (col) => col.primaryKey())
-    .addColumn("password_hash", "varchar(255)", (c) => c.notNull())
+    .addColumn("password_hash", "varchar(255)")
     .addColumn("email", "varchar(255)", (c) => c.unique().notNull())
     .addColumn("first_name", "varchar(100)", (col) => col.notNull())
     .addColumn("last_name", "varchar(100)")
+    .addColumn("provider_id", "varchar", (c) => c.unique())
     .addColumn("created_at", "timestamp", (col) =>
       col.defaultTo(sql`CURRENT_TIMESTAMP`),
     )
     .addColumn("updated_at", "timestamp", (c) =>
       c.defaultTo(sql`CURRENT_TIMESTAMP`),
     )
+    .execute();
+
+  await db.schema
+    .createIndex("idx_provider_id")
+    .on("users")
+    .column("provider_id")
     .execute();
 
   await sql`

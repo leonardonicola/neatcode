@@ -1,12 +1,10 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { PassportSerializer } from "@nestjs/passport";
 import { AuthService } from "./auth.service";
-import { SessionUser } from "../../@types/session";
+import { SessionUser } from "@/@types/session";
 
 @Injectable()
 export class SessionSerializer extends PassportSerializer {
-  private readonly logger = new Logger(SessionSerializer.name);
-
   constructor(private readonly authService: AuthService) {
     super();
   }
@@ -15,8 +13,6 @@ export class SessionSerializer extends PassportSerializer {
     user: SessionUser,
     done: (err: Error | null, user: unknown) => void,
   ): void {
-    // Store only user ID in session
-    this.logger.debug(user.id, "User stored");
     done(null, user.id);
   }
 
@@ -37,8 +33,6 @@ export class SessionSerializer extends PassportSerializer {
         first_name: user.first_name,
         last_name: user.last_name,
       };
-
-      this.logger.debug(user, "Deserialized");
 
       done(null, sessionUser);
     } catch (error) {
