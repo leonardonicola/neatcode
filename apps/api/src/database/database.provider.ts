@@ -1,10 +1,10 @@
 import { Provider } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import type { AppConfig } from "../config";
+import type { AppConfig } from "../config/app";
 import { Pool } from "pg";
 import { Kysely, PostgresDialect } from "kysely";
 import type { DB } from "kysely-codegen";
-import { DatabaseConfig, DatabaseEnv } from "./database.config";
+import { DatabaseConfig, DatabaseEnv } from "@/config/database";
 
 export const databaseProviders: Provider[] = [
   {

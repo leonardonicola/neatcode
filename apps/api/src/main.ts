@@ -2,13 +2,13 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { Logger } from "nestjs-pino";
 import { ConfigService } from "@nestjs/config";
-import type { AppConfig } from "./config";
+import type { AppConfig } from "./config/app";
 import { setupGracefulShutdown } from "nestjs-graceful-shutdown";
 import { ValidationPipe } from "@nestjs/common";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import passport from "passport";
-import { DatabaseConfig, DatabaseEnv } from "./database/database.config";
+import { DatabaseConfig, DatabaseEnv } from "@/config/database";
 import { Pool } from "pg";
 
 async function bootstrap() {
