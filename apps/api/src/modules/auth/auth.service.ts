@@ -3,13 +3,14 @@ import {
   UnauthorizedException,
   ConflictException,
   Inject,
+  UnprocessableEntityException,
 } from "@nestjs/common";
 import { Kysely } from "kysely";
 import * as bcrypt from "bcrypt";
 import { DB } from "kysely-codegen";
-import { NewUser, SafeUser, User } from "../../@types/user";
+import { NewUser, SafeUser, User } from "@/@types/user";
 import { v4 } from "uuid";
-import { SessionUser } from "../../@types/session";
+import { OAuth2User, SessionUser } from "@/@types/session";
 import { LoginDto, RegisterDto, RegisterOAuthDto } from "./dtos";
 
 @Injectable()
@@ -85,7 +86,7 @@ export class AuthService {
     return this.toSafeUser(user);
   }
 
-  async validateOAuthLogin(profile: SessionUser): Promise<SafeUser> {
+  async validateOAuthLogin(profile: OAuth2User): Promise<SafeUser> {
     let user = await this.db
       .selectFrom("users")
       .select([
@@ -100,11 +101,17 @@ export class AuthService {
       .where("provider_id", "=", profile.id)
       .executeTakeFirst();
 
+    if (!profile.emails.length) {
+      throw new UnprocessableEntityException("No email found for user");
+    }
+
     if (!user) {
+      const verifiedEmail = profile.emails.find((e) => e.verified);
+
       user = await this.registerOAuthUser({
-        email: profile.email,
+        email: verifiedEmail?.value ?? profile.emails[0]!.value,
         providerId: profile.id,
-        firstName: profile.first_name || profile.email,
+        firstName: profile.displayName,
       });
     }
     return user;

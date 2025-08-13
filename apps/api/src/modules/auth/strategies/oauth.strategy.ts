@@ -1,8 +1,8 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
-import { Strategy } from "passport-oauth2";
+import { Strategy } from "passport-google-oauth20";
 import { AuthService } from "../auth.service";
-import { SessionUser } from "@/@types/session";
+import { OAuth2User } from "@/@types/session";
 import { ConfigService } from "@nestjs/config";
 import { AppConfig, OAuth2Config } from "@/config/app";
 
@@ -19,14 +19,14 @@ export class OAuth2Strategy extends PassportStrategy(Strategy, "oauth2") {
       clientSecret: oauthEnv.clientSecret,
       tokenURL: oauthEnv.tokenUrl,
       callbackURL: oauthEnv.callbackUrl,
-      scope: ["profile", "email"],
+      scope: ["profile"],
     });
   }
 
   async validate(
     _accessToken: string,
     _refreshToken: string,
-    profile: SessionUser,
+    profile: OAuth2User,
   ) {
     const user = await this.authService.validateOAuthLogin(profile);
 
