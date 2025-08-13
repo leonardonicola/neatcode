@@ -3,7 +3,10 @@
   "extends": "@repo/typescript-config/api.json",
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src", "kysely.config.ts"]
+  "include": ["src", "kysely.config.ts"],
 }
