@@ -27,7 +27,6 @@ export class OAuth2Strategy extends PassportStrategy(Strategy, "oauth2") {
     _accessToken: string,
     _refreshToken: string,
     profile: SessionUser,
-    _done: Function,
   ) {
     const user = await this.authService.validateOAuthLogin(profile);
 
